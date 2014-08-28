@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+	<title>Opposite Text Over</title>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<style>
+		body {
+			display: block;
+			position: relative;
+			padding: 0;
+			margin: 0;
+		}
+		.txt {
+			font-size: 4em;
+			height: 100px;
+			left: 30px;
+			position: fixed;
+			text-align: right;
+			top: 50px;
+			width: 300px;
+			z-index: 2;
+		}
+		.txt1 {
+			color: #000;
+		}
+		.txt2 {
+			clip: rect(0,0,0,0);
+			color: #fff;
+		}
+		
+		.col {
+			margin: 0 0 0 160px;
+			position: relative;
+			top: 100px;
+			z-index: 1;
+		}
+		.image {
+			background-color: blue;
+			height: 300px;
+			margin-bottom: 120px;
+			position: relative;
+			width: 800px;
+			z-index: 1;
+		}
+	</style>
+	<script>
+		$(function() {
+
+			var $w = $(window);
+			
+			function setMask(){
+				$('.col').children().each(function(){
+
+					var	imgLeftPos = $(this).offset().left,
+						imgTopOff = $(this).offset().top,
+						imgHeight = $(this).height(),
+						$txtOver = $('.txt2'),
+						txtOverWidth = $txtOver.width(),
+						txtOverHeight = $txtOver.height(),
+						txtOverLeftPos = $txtOver.offset().left,
+						txtOverTopOff = $txtOver.offset().top,
+						txtOverTopPos = $txtOver.position().top,
+						overlapYdown = txtOverHeight,
+						overlapYup =  imgTopOff - txtOverTopOff,
+						overlapX =  Math.abs(txtOverLeftPos - imgLeftPos),
+						imgScroll = (imgTopOff - $w.scrollTop());
+
+					if(imgScroll < 0){
+						overlapYdown = (imgScroll + imgHeight) - txtOverTopPos;
+					}
+
+					if(overlapYup < txtOverHeight && overlapYdown > 0 ){
+						if($(this).hasClass('txt-white')){
+							$txtOver.css({
+								'clip' : 'rect(' + overlapYup + 'px,' + txtOverWidth + 'px,' + overlapYdown +'px,'+ overlapX + 'px)'
+							});
+						}else{
+							$txtOver.css({'clip' : 'rect(0,0,0,0)'});
+						}
+					}
+				});
+			}
+
+			$(window).scroll(function() {
+				setMask();	
+			});
+			setMask();
+		});
+	</script>
+</head>
+<body>
+	<div class="txt1 txt">Text over</div>
+	<div class="txt2 txt">Text over</div>
+	<div class="col">
+		<div class="image txt-white"><img src="http://lorempixel.com/g/800/300/people/3/" alt=""></div>
+		<div class="image "><img src="http://lorempixel.com/g/800/300/people/7/" alt=""></div>
+		<div class="image txt-white"><img src="http://lorempixel.com/g/800/300/people/3/" alt=""></div>
+		<div class="image "><img src="http://lorempixel.com/g/800/300/people/7/" alt=""></div>
+		<div class="image "><img src="http://lorempixel.com/g/800/300/people/7/" alt=""></div>
+		<div class="image txt-white"><img src="http://lorempixel.com/g/800/300/people/3/" alt=""></div>
+		<div class="image txt-white"><img src="http://lorempixel.com/g/800/300/people/3/" alt=""></div>
+		<div class="image "><img src="http://lorempixel.com/g/800/300/people/7/" alt=""></div>
+	</div>
+</body>
+</html>
